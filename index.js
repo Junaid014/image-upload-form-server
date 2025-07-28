@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const dotenv = require('dotenv');
 dotenv.config();
 const port = process.env.PORT || 3000;
@@ -37,6 +37,20 @@ async function run() {
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).send({ message: 'Failed to fetch products' });
+  }
+});
+
+
+app.get('/products/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    const product = await productCollection.findOne({ _id: new ObjectId(id) });
+    if (!product) {
+      return res.status(404).send({ message: "Product not found" });
+    }
+    res.send(product);
+  } catch (error) {
+    res.status(500).send({ message: "Error fetching product" });
   }
 });
 
