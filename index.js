@@ -30,6 +30,16 @@ async function run() {
     // collection
     const productCollection = client.db("image_uplod_form").collection("products");
 
+    app.get('/products', async (req, res) => {
+  try {
+    const result = await productCollection.find().toArray();
+    res.send(result);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).send({ message: 'Failed to fetch products' });
+  }
+});
+
     app.post('/products', async (req, res) => {
   try {
     const product = req.body;
